@@ -272,12 +272,20 @@ function getDevServerConfig() {
             }
         ],
         server: process.env.CODESPACES ? 'http' : 'https',
-        static: {
-            directory: process.cwd(),
-            watch: {
-                ignored: file => file.endsWith('.log')
+        static: [
+            {
+                directory: process.cwd(),
+                watch: {
+                    ignored: file => file.endsWith('.log')
+                }
+            },
+            // Serve lib-jitsi-meet assets even when libs/ isn't populated (e.g. webpack serve without make dev).
+            {
+                directory: join(process.cwd(), 'node_modules/lib-jitsi-meet/dist/umd'),
+                publicPath: '/libs/',
+                watch: false
             }
-        }
+        ]
     };
 }
 
