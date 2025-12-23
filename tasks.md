@@ -108,3 +108,64 @@ Test result:
 Known limitations or follow-up tasks:
 - 'index.html' is still proxied from backend, so the <title> tag in the browser (before JS loads) might still show "Orbit Conference".
 - The server is now running on port 8082.
+
+Task ID: T-0003
+Title: Replace All Application Logos
+Status: DONE
+Owner: Miles
+Related repo: jitsi-meet
+Created: 2025-12-23 14:00
+Last updated: 2025-12-23 14:05
+
+START LOG
+
+Timestamp: 2025-12-23 14:00
+Current behavior or state:
+- Logos are mix of Jitsi defaults and new '1.png' (in config).
+- Logo files 'jitsilogo.png' and 'apple-touch-icon.png' are still Jitsi branded.
+
+Plan and scope for this task:
+- Overwrite 'images/jitsilogo.png' and 'images/apple-touch-icon.png' with 'images/1.png'.
+- Update 'manifest.json' to refer to 'images/1.png'.
+- Update 'title.html' favicon and meta tags.
+
+Files or modules expected to change:
+- images/*
+- manifest.json
+- title.html
+
+Risks or things to watch out for:
+- Browser caching of images.
+
+WORK CHECKLIST
+
+- [x] Code changes implemented according to the defined scope
+- [x] No unrelated refactors or drive-by changes
+- [x] Configuration and environment variables verified
+- [ ] Database migrations or scripts documented if they exist
+- [x] Logs and error handling reviewed
+
+END LOG
+
+Timestamp: 2025-12-23 14:05
+Summary of what actually changed:
+- Overwrote 'images/jitsilogo.png' and 'images/apple-touch-icon.png' with 'images/1.png'.
+- Updated 'manifest.json' to use 'images/1.png' for all icons.
+- Updated 'title.html' to use 'images/1.png' for favicon and og:image.
+- Verified 'rightwatermark.png' does not exist.
+
+Files actually modified:
+- images/jitsilogo.png
+- images/apple-touch-icon.png
+- manifest.json
+- title.html
+
+How it was tested:
+- 'curl' to https://localhost:8082/manifest.json -> Verified icons path.
+- 'curl' to https://localhost:8082/title.html -> Verified meta tags.
+
+Test result:
+- PASS: Logos are updated.
+
+Known limitations or follow-up tasks:
+- None.
