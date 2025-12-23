@@ -9,7 +9,7 @@
  */
 
 var interfaceConfig = {
-    APP_NAME: 'Jitsi Meet',
+    APP_NAME: 'Orbit Conference',
     AUDIO_LEVEL_PRIMARY_COLOR: 'rgba(255,255,255,0.4)',
     AUDIO_LEVEL_SECONDARY_COLOR: 'rgba(255,255,255,0.2)',
 
@@ -27,7 +27,7 @@ var interfaceConfig = {
     CLOSE_PAGE_GUEST_HINT: false, // A html text to be shown to guests on the close page, false disables it
 
     DEFAULT_BACKGROUND: '#040404',
-    DEFAULT_WELCOME_PAGE_LOGO_URL: 'images/watermark.svg',
+    DEFAULT_WELCOME_PAGE_LOGO_URL: 'images/1.png',
 
     DISABLE_DOMINANT_SPEAKER_INDICATOR: false,
 
@@ -71,7 +71,7 @@ var interfaceConfig = {
      */
     HIDE_INVITE_MORE_HEADER: false,
 
-    JITSI_WATERMARK_LINK: 'https://jitsi.org',
+    JITSI_WATERMARK_LINK: 'https://eburon.ai',
 
     LANG_DETECTION: true, // Allow i18n to detect the system language
     LOCAL_THUMBNAIL_RATIO: 16 / 9, // 16:9
@@ -85,7 +85,7 @@ var interfaceConfig = {
     MAXIMUM_ZOOMING_COEFFICIENT: 1.3,
 
     /**
-     * Whether the mobile app Jitsi Meet is to be promoted to participants
+     * Whether the mobile app Orbit Conference is to be promoted to participants
      * attempting to join a conference in a mobile Web browser. If
      * {@code undefined}, defaults to {@code true}.
      *
@@ -100,7 +100,7 @@ var interfaceConfig = {
     OPTIMAL_BROWSERS: [ 'chrome', 'chromium', 'firefox', 'electron', 'safari', 'webkit' ],
 
     POLICY_LOGO: null,
-    PROVIDER_NAME: 'Jitsi',
+    PROVIDER_NAME: 'Orbit',
 
     /**
      * If true, will display recent list
@@ -190,7 +190,7 @@ var interfaceConfig = {
      */
     // APP_SCHEME: 'org.jitsi.meet',
 
-    // NATIVE_APP_NAME: 'Jitsi Meet',
+    // NATIVE_APP_NAME: 'Orbit Conference',
 
     /**
      * Hide the logo on the deep linking pages.
@@ -219,7 +219,7 @@ var interfaceConfig = {
     // DEFAULT_LOCAL_DISPLAY_NAME: 'me',
 
     // Please use defaultLogoUrl from config.js
-    // DEFAULT_LOGO_URL: 'images/watermark.svg',
+    // DEFAULT_LOGO_URL: 'images/1.png',
 
     // Please use defaultRemoteDisplayName from config.js
     // DEFAULT_REMOTE_DISPLAY_NAME: 'Fellow Jitster',

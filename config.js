@@ -652,7 +652,7 @@ var config = {
     // Disables or enables RTX (RFC 4588) (defaults to false).
     // disableRtx: false,
 
-    // Moves all Jitsi Meet 'beforeunload' logic (cleanup, leaving, disconnecting, etc) to the 'unload' event.
+    // Moves all Orbit Conference 'beforeunload' logic (cleanup, leaving, disconnecting, etc) to the 'unload' event.
     // disableBeforeUnloadHandlers: true,
 
     // Disables or enables TCC support in this client (default: enabled).
@@ -1289,7 +1289,7 @@ var config = {
     //
     //     // The desktop deeplinking config, disabled by default.
     //     desktop: {
-    //         appName: 'Jitsi Meet',
+    //         appName: 'Orbit Conference',
     //         appScheme: 'jitsi-meet,
     //         download: {
     //             linux:
@@ -1308,7 +1308,7 @@ var config = {
 
     //     // The ios deeplinking config.
     //     ios: {
-    //         appName: 'Jitsi Meet',
+    //         appName: 'Orbit Conference',
     //         // Specify mobile app scheme for opening the app from the mobile browser.
     //         appScheme: 'org.jitsi.meet',
     //         // Custom URL for downloading ios mobile app.
@@ -1317,7 +1317,7 @@ var config = {
 
     //     // The android deeplinking config.
     //     android: {
-    //         appName: 'Jitsi Meet',
+    //         appName: 'Orbit Conference',
     //         // Specify mobile app scheme for opening the app from the mobile browser.
     //         appScheme: 'org.jitsi.meet',
     //         // Custom URL for downloading android mobile app.
@@ -1658,7 +1658,7 @@ var config = {
 
     /**
      * This property can be used to alter the generated meeting invite links (in combination with a branding domain
-     * which is retrieved internally by jitsi meet) (e.g. https://meet.jit.si/someMeeting
+     * which is retrieved internally by Orbit Conference) (e.g. https://meet.jit.si/someMeeting
      * can become https://brandedDomain/roomAlias)
      */
     // brandingRoomAlias: null,

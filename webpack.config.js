@@ -8,7 +8,7 @@ const webpack = require('webpack');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 /**
- * The URL of the Jitsi Meet deployment to be proxy to in the context of
+ * The URL of the Orbit Conference deployment to be proxy to in the context of
  * development with webpack-dev-server.
  */
 const devServerProxyTarget
@@ -77,7 +77,8 @@ function devServerProxyBypass({ path }) {
             || tpath.startsWith('/lang/')
             || tpath.startsWith('/sounds/')
             || tpath.startsWith('/static/')
-            || tpath.endsWith('.wasm')) {
+            || tpath.endsWith('.wasm')
+            || tpath === '/interface_config.js') {
 
         return tpath;
     }

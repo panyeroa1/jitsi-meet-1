@@ -23,22 +23,22 @@ import JitsiMeetSDK
 
 @objcMembers
 class ViewController: UIViewController {
-    
+
     override func loadView() {
         let jitsiView = JitsiMeetView(frame: UIScreen.main.bounds)
         self.view = jitsiView
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         guard let view = self.view as? JitsiMeetView else { return }
         view.delegate = self
         view.join(JitsiMeet.sharedInstance().getInitialConferenceOptions())
     }
-    
+
     // MARK: - Helper Methods
-    
+
     func terminate() {
         guard let view = self.view as? JitsiMeetView else { return }
         view.leave()
@@ -49,45 +49,45 @@ class ViewController: UIViewController {
 extension ViewController: @preconcurrency JitsiMeetViewDelegate {
 
     // MARK: - Private Helper Methods
-    
+
     private func onJitsiMeetViewDelegateEvent(_ name: String, withData data: [AnyHashable: Any]?) {
         NSLog("[%@:%d] JitsiMeetViewDelegate %@ %@", #file, #line, name, data ?? [:])
-        
+
         #if DEBUG
         assert(Thread.isMainThread, "JitsiMeetViewDelegate \(name) method invoked on a non-main thread")
         #endif
     }
 
     // MARK: - JitsiMeetViewDelegate
-    
+
     func conferenceJoined(_ data: [AnyHashable: Any]) {
         onJitsiMeetViewDelegateEvent("CONFERENCE_JOINED", withData: data)
-        
+
         // Register a NSUserActivity for this conference so it can be invoked as a Siri shortcut.
         // Must match the one defined in Info.plist
         let userActivity = NSUserActivity(activityType: "org.jitsi.JitsiMeet.ios.conference")
-        
+
         if let urlStr = data["url"] as? String,
            let url = URL(string: urlStr),
            let conference = url.pathComponents.last {
-            
+
             userActivity.title = "Join \(conference)"
-            userActivity.suggestedInvocationPhrase = "Join my Jitsi meeting"
+            userActivity.suggestedInvocationPhrase = "Join my Orbit Conferenceing"
             userActivity.userInfo = ["url": urlStr]
             userActivity.isEligibleForSearch = true
             userActivity.isEligibleForPrediction = true
             userActivity.persistentIdentifier = urlStr
-            
+
             // Subtitle
             let attributes = CSSearchableItemAttributeSet(contentType: UTType.item)
             attributes.contentDescription = urlStr
             userActivity.contentAttributeSet = attributes
-            
+
             self.userActivity = userActivity
             userActivity.becomeCurrent()
         }
     }
-    
+
     func ready(toClose data: [AnyHashable: Any]) {
         onJitsiMeetViewDelegateEvent("READY_TO_CLOSE", withData: data)
     }

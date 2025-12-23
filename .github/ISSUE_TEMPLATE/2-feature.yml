@@ -1,11 +1,11 @@
 name: Feature request
-description: Suggest an idea for Jitsi Meet
+description: Suggest an idea for Orbit Conference
 labels: ["feature-request"]
 body:
   - type: markdown
     attributes:
       value: |
-        Thank you for suggesting an idea to make Jitsi Meet better.
+        Thank you for suggesting an idea to make Orbit Conference better.
 
         **Note**: the ultimate decision for implementing features lies on the Jitsi team, not all feature requests shall be accepted.
   - type: textarea
