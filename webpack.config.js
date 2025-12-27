@@ -325,6 +325,13 @@ module.exports = (_env, argv) => {
                 }),
                 new webpack.ProvidePlugin({
                     process: 'process/browser'
+                }),
+                new webpack.EnvironmentPlugin({
+                    SUPABASE_URL: '',
+                    SUPABASE_ANON_KEY: '',
+                    GEMINI_API_KEY: '',
+                    ELEVENLABS_API_KEY: '',
+                    CARTESIA_API_KEY: ''
                 })
             ],
 
