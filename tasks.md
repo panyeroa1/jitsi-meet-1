@@ -330,3 +330,68 @@ Known limitations or follow-up tasks:
 - **API keys exposed to client** - not production-ready without backend proxy.
 
 Status: IN-PROGRESS → DONE (core implementation) / BLOCKED (full integration pending hooks)
+
+------------------------------------------------------------
+
+Task ID: T-0005
+Title: Project Linting & Configuration Maintenance
+Status: DONE
+Owner: Miles
+Related repo: jitsi-meet
+Branch: main
+Created: 2025-12-27 14:45
+Last updated: 2025-12-27 15:20
+
+START LOG
+
+Timestamp: 2025-12-27 14:45
+Current behavior or state:
+- tasks.md has markdown linting errors (MD041, MD034, MD033).
+- static/whiteboard.html and static/prejoin.html have HTML accessibility warnings (missing title, lang, duplicate charset).
+- webpack.config.js has formatting error (missing blank line).
+
+Plan and scope for this task:
+- Fix all markdown linting errors in tasks.md.
+- Fix HTML accessibility issues in static HTML files.
+- Fix formatting in webpack.config.js.
+
+Files or modules expected to change:
+- tasks.md
+- static/whiteboard.html
+- static/prejoin.html
+- webpack.config.js
+
+Risks or things to watch out for:
+- None.
+
+WORK CHECKLIST
+
+- [x] Code changes implemented according to the defined scope
+- [x] No unrelated refactors or drive-by changes
+- [x] Configuration and environment variables verified
+- [x] Database migrations or scripts documented if they exist
+- [x] Logs and error handling reviewed
+
+END LOG
+
+Timestamp: 2025-12-27 15:20
+Summary of what actually changed:
+- Added top-level header and fixed bare URLs in tasks.md.
+- Added `lang="en"`, explicit `<title>`, and fixed charset meta in whiteboard.html and prejoin.html.
+- Added missing blank line in webpack.config.js.
+
+Files actually modified:
+- tasks.md
+- static/whiteboard.html
+- static/prejoin.html
+- webpack.config.js
+
+How it was tested:
+- Verified file contents manually.
+- Verified linting errors resolved (ignoring Android build environment errors).
+
+Test result:
+- PASS
+
+Known limitations or follow-up tasks:
+- Android build errors persist but are unrelated to web development.
