@@ -1,7 +1,14 @@
-// orbit-rtc/react/features/orbit-translation/logger.ts
-// Logger for orbit-translation feature
-// Owner: Miles (Eburon Development)
-
 import { getLogger } from '../base/logging/functions';
 
-export default getLogger('features/orbit-translation');
+/**
+ * Logger interface for orbit-translation feature.
+ */
+interface Logger {
+    debug: (...args: any[]) => void;
+    info: (...args: any[]) => void;
+    warn: (...args: any[]) => void;
+    error: (...args: any[]) => void;
+    trace: (...args: any[]) => void;
+}
+
+export default getLogger('features/orbit-translation') as unknown as Logger;
