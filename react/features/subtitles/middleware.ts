@@ -8,6 +8,7 @@ import JitsiMeetJS from '../base/lib-jitsi-meet';
 import { TRANSCRIBER_ID } from '../base/participants/constants';
 import MiddlewareRegistry from '../base/redux/MiddlewareRegistry';
 import { showErrorNotification } from '../notifications/actions';
+import { finalizeTranscriptSegment } from '../orbit-translation/actions';
 import { RECORDING_METADATA_ID } from '../recording/constants';
 import { TRANSCRIBER_JOINED } from '../transcribing/actionTypes';
 
@@ -39,6 +40,11 @@ const JSON_TYPE_TRANSCRIPTION_RESULT = 'transcription-result';
  * translation result.
  */
 const JSON_TYPE_TRANSLATION_RESULT = 'translation-result';
+
+/**
+ * Track finalized transcript message IDs we already forwarded into orbit-translation.
+ */
+const _forwardedFinalTranscriptIds = new Set<string>();
 
 /**
  * The local participant property which is used to set whether the local
@@ -149,6 +155,7 @@ function _endpointMessageReceived(store: IStore, next: Function, action: AnyActi
     };
     const { timestamp } = json;
     const participantId = participant.id;
+    const localParticipantId = state['features/base/participants'].local?.id;
 
     // Handle transcript messages
     const language = state['features/base/conference'].conference
@@ -195,6 +202,7 @@ function _endpointMessageReceived(store: IStore, next: Function, action: AnyActi
         // translations are disabled.
 
         const { text } = json.transcript[0];
+        const finalText = !isInterim ? text?.trim() : '';
 
         // First, notify the external API.
         if (!(isInterim && skipInterimTranscriptions)) {
@@ -234,6 +242,28 @@ function _endpointMessageReceived(store: IStore, next: Function, action: AnyActi
                         // Ignored.
                     }
                 }
+            }
+        }
+
+        // Forward only local participant's FINAL segments into orbit-translation so we don't duplicate inserts
+        // across all conference participants.
+        const isSupabaseConfigured = Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_ANON_KEY);
+
+        if (isSupabaseConfigured && localParticipantId && participantId === localParticipantId && finalText && transcriptMessageID) {
+            const roomId = state['features/base/conference'].conference?.getName()
+                ?? state['features/base/conference'].room
+                ?? '';
+
+            if (roomId && !_forwardedFinalTranscriptIds.has(transcriptMessageID)) {
+                _forwardedFinalTranscriptIds.add(transcriptMessageID);
+                dispatch(finalizeTranscriptSegment({
+                    roomId,
+                    speakerId: participantId,
+                    speakerName: participant.name,
+                    sourceLang: json.language,
+                    text: finalText,
+                    isFinal: true
+                }));
             }
         }
 

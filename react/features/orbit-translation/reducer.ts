@@ -2,22 +2,22 @@
 // Redux reducer
 // Owner: Miles (Eburon Development)
 
-import { ReducerRegistry } from '../base/redux/ReducerRegistry';
-import type { IOrbitTranslationState } from './types';
+import { AnyAction } from 'redux';
+
+import ReducerRegistry from '../base/redux/ReducerRegistry';
+
 import {
+    SET_ACTIVE_SUBSCRIPTION,
     TRANSCRIPT_SEGMENT_FINALIZED,
     TRANSLATION_RECEIVED,
-    UPDATE_TTS_SETTINGS,
-    TTS_PLAYBACK_STARTED,
     TTS_PLAYBACK_ENDED,
-    SET_ACTIVE_SUBSCRIPTION,
-    UPDATE_SEGMENT_BUFFER
+    TTS_PLAYBACK_STARTED,
+    UPDATE_SEGMENT_BUFFER,
+    UPDATE_TTS_SETTINGS
 } from './actionTypes';
-import { DEFAULT_TTS_ENGINE, DEFAULT_PREFERRED_LANG } from './constants';
+import { DEFAULT_PREFERRED_LANG, DEFAULT_TTS_ENGINE } from './constants';
+import type { IOrbitTranslationState } from './types';
 
-/**
- * Initial state
- */
 const INITIAL_STATE: IOrbitTranslationState = {
     currentSegment: null,
     translationQueue: [],
@@ -31,12 +31,9 @@ const INITIAL_STATE: IOrbitTranslationState = {
     activeSubscription: null
 };
 
-/**
- * Reducer
- */
 ReducerRegistry.register<IOrbitTranslationState>(
     'features/orbit-translation',
-    (state = INITIAL_STATE, action): IOrbitTranslationState => {
+    (state = INITIAL_STATE, action: AnyAction): IOrbitTranslationState => {
         switch (action.type) {
         case UPDATE_SEGMENT_BUFFER:
             return {

@@ -56,6 +56,7 @@ import { INoAudioSignalState } from '../no-audio-signal/reducer';
 import { INoiseDetectionState } from '../noise-detection/reducer';
 import { INoiseSuppressionState } from '../noise-suppression/reducer';
 import { INotificationsState } from '../notifications/reducer';
+import { IOrbitTranslationState } from '../orbit-translation/types';
 import { IParticipantsPaneState } from '../participants-pane/reducer';
 import { IPipState } from '../pip/reducer';
 import { IPollsState } from '../polls/reducer';
@@ -145,6 +146,7 @@ export interface IReduxState {
     'features/noise-detection': INoiseDetectionState;
     'features/noise-suppression': INoiseSuppressionState;
     'features/notifications': INotificationsState;
+    'features/orbit-translation': IOrbitTranslationState;
     'features/participants-pane': IParticipantsPaneState;
     'features/pip': IPipState;
     'features/polls': IPollsState;

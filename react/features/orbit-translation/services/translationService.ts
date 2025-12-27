@@ -13,31 +13,26 @@ if (!apiKey) {
 const genAI = new GoogleGenerativeAI(apiKey);
 
 type TranslateArgs = {
-    text: string;
-    targetLang: string; // e.g. "en", "fr-BE", "nl-BE", "tl-PH"
-    sourceLang?: string; // optional
+    // e.g. "en", "fr-BE", "nl-BE", "tl-PH"
+    sourceLang?: string;
+    targetLang: string;
+    text: string; // optional
 };
 
-/**
- * Translate text to target language using Gemini API
- *
- * @param args - Translation parameters
- * @returns Translated text
- */
 export async function translateText(args: TranslateArgs): Promise<string> {
     const { text, targetLang, sourceLang } = args;
 
     // Strict prompt: translate only, no headers, no quotes, preserve meaning/tone
     const prompt = [
-        `You are a professional realtime interpreter.`,
+        'You are a professional realtime interpreter.',
         `Translate the user's text into ${targetLang}.`,
-        sourceLang ? `The source language is ${sourceLang}.` : `Detect the source language automatically.`,
-        `Rules:`,
-        `- Output ONLY the translated text. No labels, no quotes, no explanations.`,
-        `- Preserve meaning, tone, and intent.`,
+        sourceLang ? `The source language is ${sourceLang}.` : 'Detect the source language automatically.',
+        'Rules:',
+        '- Output ONLY the translated text. No labels, no quotes, no explanations.',
+        '- Preserve meaning, tone, and intent.',
         `- Keep it natural for native speakers of ${targetLang}.`,
-        ``,
-        `TEXT:`,
+        '',
+        'TEXT:',
         text
     ].join('\n');
 
@@ -54,26 +49,17 @@ export async function translateText(args: TranslateArgs): Promise<string> {
     }
 }
 
-/**
- * Ensure text is strictly in target language (enforcement/rewrite layer)
- *
- * Used as a safeguard before TTS to prevent wrong-language read-aloud.
- *
- * @param text - Text to enforce
- * @param targetLang - Required target language
- * @returns Text rewritten in target language
- */
 export async function ensureTargetLanguage(text: string, targetLang: string): Promise<string> {
     // Use a rewrite step that forces target language without adding meta
     const prompt = [
         `Rewrite the text so it is strictly in ${targetLang}.`,
-        `Rules:`,
-        `- Output ONLY the rewritten text.`,
-        `- Do NOT mention translation or language.`,
-        `- Preserve the meaning, tone, emotion, and intent.`,
+        'Rules:',
+        '- Output ONLY the rewritten text.',
+        '- Do NOT mention translation or language.',
+        '- Preserve the meaning, tone, emotion, and intent.',
         `- Make it sound native and natural for ${targetLang}.`,
-        ``,
-        `TEXT:`,
+        '',
+        'TEXT:',
         text
     ].join('\n');
 

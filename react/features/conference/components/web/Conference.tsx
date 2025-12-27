@@ -1,5 +1,5 @@
 import { throttle } from 'lodash-es';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { WithTranslation } from 'react-i18next';
 import { connect as reactReduxConnect, useDispatch, useSelector, useStore } from 'react-redux';
 
@@ -22,6 +22,9 @@ import CalleeInfoContainer from '../../../invite/components/callee-info/CalleeIn
 import LargeVideo from '../../../large-video/components/LargeVideo.web';
 import LobbyScreen from '../../../lobby/components/web/LobbyScreen';
 import { getIsLobbyVisible } from '../../../lobby/functions';
+import { translationReceived, updateTtsSettings } from '../../../orbit-translation/actions';
+import { getTtsSettings } from '../../../orbit-translation/functions';
+import { subscribeToTranslationSegments } from '../../../orbit-translation/services/supabaseService';
 import { getOverlayToRender } from '../../../overlay/functions.web';
 import ParticipantsPane from '../../../participants-pane/components/web/ParticipantsPane';
 import Prejoin from '../../../prejoin/components/web/Prejoin';
@@ -481,6 +484,54 @@ export default reactReduxConnect(_mapStateToProps)(translate(props => {
 
     const { isOpen: isChatOpen } = useSelector((state: IReduxState) => state['features/chat']);
     const isFileUploadEnabled = useSelector(isFileUploadingEnabled);
+    const ttsSettings = useSelector(getTtsSettings);
+    const roomId = useSelector((state: IReduxState) => state['features/base/conference'].conference?.getName()
+        ?? state['features/base/conference'].room
+        ?? '');
+    const localParticipantId = useSelector((state: IReduxState) =>
+        state['features/base/participants'].local?.id ?? '');
+
+    const didUpsertParticipantRef = useRef(false);
+    const isSupabaseConfigured = Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_ANON_KEY);
+
+    // Ensure the local participant exists in Supabase with current settings once we have a room + participant ID.
+    useEffect(() => {
+        if (!isSupabaseConfigured || !roomId || !localParticipantId || didUpsertParticipantRef.current) {
+            return;
+        }
+
+        didUpsertParticipantRef.current = true;
+        dispatch(updateTtsSettings({ ...ttsSettings }));
+    }, [ dispatch, isSupabaseConfigured, localParticipantId, roomId ]);
+
+    // Subscribe to translations for the user's preferred language and feed them into orbit-translation middleware.
+    useEffect(() => {
+        if (!isSupabaseConfigured || !roomId || !ttsSettings.readAloudEnabled || !ttsSettings.preferredLang) {
+            return;
+        }
+
+        let unsubscribe: (() => void) | undefined;
+
+        try {
+            unsubscribe = subscribeToTranslationSegments(roomId, ttsSettings.preferredLang, (row: any) => {
+                dispatch(translationReceived({
+                    roomId: row.room_id,
+                    segmentId: row.segment_id,
+                    speakerId: row.speaker_id,
+                    targetLang: row.target_lang,
+                    translatedText: row.translated_text,
+                    translator: row.translator
+                }));
+            });
+        } catch (error) {
+            // Missing env vars or realtime not configured: treat as optional integration.
+            unsubscribe = undefined;
+        }
+
+        return () => {
+            unsubscribe?.();
+        };
+    }, [ dispatch, isSupabaseConfigured, roomId, ttsSettings.preferredLang, ttsSettings.readAloudEnabled ]);
 
     const handleDragEnter = useCallback((e: React.DragEvent) => {
         e.preventDefault();

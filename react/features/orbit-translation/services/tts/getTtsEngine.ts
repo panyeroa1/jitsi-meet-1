@@ -2,17 +2,11 @@
 // TTS engine factory
 // Owner: Miles (Eburon Development)
 
-import type { ITtsEngine, TtsEngineName } from './types';
-import { GeminiLiveTts } from './geminiLiveTts';
-import { ElevenLabsTts } from './elevenlabsTts';
 import { CartesiaTts } from './cartesiaTts';
+import { ElevenLabsTts } from './elevenlabsTts';
+import { GeminiLiveTts } from './geminiLiveTts';
+import type { ITtsEngine, TtsEngineName } from './types';
 
-/**
- * Factory function to instantiate TTS engines
- *
- * @param name - Engine name
- * @returns TTS engine instance
- */
 export function getTtsEngine(name: TtsEngineName): ITtsEngine {
     switch (name) {
     case 'elevenlabs':

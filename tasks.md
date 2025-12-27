@@ -1,3 +1,5 @@
+# Orbit Conference Development Tasks
+
 Task ID: T-0001
 Title: Run Development Server with Proxy
 Status: IN-PROGRESS
@@ -44,7 +46,7 @@ Timestamp: 2025-12-23 13:48
 Summary of what actually changed:
 
 - Created tasks.md to track work.
-- Started webpack-dev-server via 'make dev' with WEBPACK_DEV_SERVER_PROXY_TARGET=https://alpha.jitsi.net.
+- Started webpack-dev-server via 'make dev' with WEBPACK_DEV_SERVER_PROXY_TARGET=<https://alpha.jitsi.net>.
 - Verified server accessibility on localhost.
 
 Files actually modified:
@@ -55,11 +57,11 @@ Files actually modified:
 How it was tested:
 
 - Ran 'make dev' and monitored output for compilation success.
-- Used 'curl -k -I https://localhost:8081' to verify HTTP 200 response.
+- Used 'curl -k -I <https://localhost:8081>' to verify HTTP 200 response.
 
 Test result:
 
-- PASS: Server is up and running at https://localhost:8081.
+- PASS: Server is up and running at <https://localhost:8081>.
 
 Known limitations or follow-up tasks:
 
@@ -116,8 +118,8 @@ Files actually modified:
 
 How it was tested:
 
-- 'curl' to https://localhost:8082/interface_config.js -> Verified "Orbit Conference".
-- 'curl' to https://localhost:8082/images/1.png -> Verified HTTP 200.
+- 'curl' to <https://localhost:8082/interface_config.js> -> Verified "Orbit Conference".
+- 'curl' to <https://localhost:8082/images/1.png> -> Verified HTTP 200.
 
 Test result:
 
@@ -125,7 +127,7 @@ Test result:
 
 Known limitations or follow-up tasks:
 
-- 'index.html' is still proxied from backend, so the <title> tag in the browser (before JS loads) might still show "Orbit Conference".
+- 'index.html' is still proxied from backend, so the `<title>` tag in the browser (before JS loads) might still show "Orbit Conference".
 - The server is now running on port 8082.
 
 Task ID: T-0003
@@ -187,8 +189,8 @@ Files actually modified:
 
 How it was tested:
 
-- 'curl' to https://localhost:8082/manifest.json -> Verified icons path.
-- 'curl' to https://localhost:8082/title.html -> Verified meta tags.
+- 'curl' to <https://localhost:8082/manifest.json> -> Verified icons path.
+- 'curl' to <https://localhost:8082/title.html> -> Verified meta tags.
 
 Test result:
 

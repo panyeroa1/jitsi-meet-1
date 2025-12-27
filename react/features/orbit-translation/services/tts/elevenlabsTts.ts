@@ -2,24 +2,17 @@
 // ElevenLabs TTS engine implementation
 // Owner: Miles (Eburon Development)
 
-import type { ITtsEngine, SpeakArgs, TtsEngineName } from './types';
+import type { ISpeakArgs, ITtsEngine, TtsEngineName } from './types';
 
 const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY || '';
 const ELEVENLABS_API_URL = 'https://api.elevenlabs.io/v1/text-to-speech';
 
-/**
- * ElevenLabs TTS Engine
- * High-quality neural TTS with voice cloning
- */
 export class ElevenLabsTts implements ITtsEngine {
     readonly name: TtsEngineName = 'elevenlabs';
     private audioContext: AudioContext | null = null;
     private currentSource: AudioBufferSourceNode | null = null;
 
-    /**
-     * Speak text using ElevenLabs API
-     */
-    async speak(args: SpeakArgs): Promise<void> {
+    async speak(args: ISpeakArgs): Promise<void> {
         const { text, voiceId = '21m00Tcm4TlvDq8ikWAM' } = args; // Default: Rachel voice
 
         if (!ELEVENLABS_API_KEY) {
@@ -62,7 +55,7 @@ export class ElevenLabsTts implements ITtsEngine {
             // Decode and play
             const audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer);
 
-            return new Promise((resolve, reject) => {
+            return new Promise<void>(resolve => {
                 const source = this.audioContext!.createBufferSource();
 
                 source.buffer = audioBuffer;
@@ -80,9 +73,6 @@ export class ElevenLabsTts implements ITtsEngine {
         }
     }
 
-    /**
-     * Stop current playback
-     */
     stop(): void {
         if (this.currentSource) {
             this.currentSource.stop();

@@ -4,33 +4,31 @@
 
 import { AnyAction } from 'redux';
 
-import { MiddlewareRegistry } from '../base/redux/MiddlewareRegistry';
 import type { IStore } from '../app/types';
-import {
-    insertTranscriptSegment,
-    upsertTranslationSegment,
-    fetchActiveParticipants,
-    updateParticipantSettings
-} from './services/supabaseService';
-import { translateText, ensureTargetLanguage } from './services/translationService';
-import { AudioQueue } from './services/audioQueue';
-import { getTtsEngine } from './services/tts/getTtsEngine';
+import MiddlewareRegistry from '../base/redux/MiddlewareRegistry';
+
 import {
     TRANSCRIPT_SEGMENT_FINALIZED,
     TRANSLATION_RECEIVED,
     UPDATE_TTS_SETTINGS
 } from './actionTypes';
-import { ttsPlaybackStarted, ttsPlaybackEnded } from './actions';
+import { ttsPlaybackEnded, ttsPlaybackStarted } from './actions';
+import { MIN_SEGMENT_LENGTH } from './constants';
 import { getTtsSettings } from './functions';
 import logger from './logger';
-import { MIN_SEGMENT_LENGTH } from './constants';
+import { AudioQueue } from './services/audioQueue';
+import {
+    fetchActiveParticipants,
+    insertTranscriptSegment,
+    updateParticipantSettings,
+    upsertTranslationSegment
+} from './services/supabaseService';
+import { ensureTargetLanguage, translateText } from './services/translationService';
+import { getTtsEngine } from './services/tts/getTtsEngine';
 
 // Global audio queue instance (one per client)
 const audioQueue = new AudioQueue();
 
-/**
- * Middleware
- */
 MiddlewareRegistry.register((store: IStore) => (next: Function) => async (action: AnyAction) => {
     const result = next(action);
 
@@ -51,15 +49,11 @@ MiddlewareRegistry.register((store: IStore) => (next: Function) => async (action
     return result;
 });
 
-/**
- * Handle transcript segment finalized
- * Persist to DB and trigger translation for all active languages
- */
 async function _handleTranscriptFinalized(store: IStore, action: AnyAction) {
     const { segment } = action;
 
     // Validate segment
-    if (!segment || !segment.text || segment.text.length < MIN_SEGMENT_LENGTH) {
+    if (!segment?.text || segment.text.length < MIN_SEGMENT_LENGTH) {
         logger.debug('Skipping short segment:', segment?.text);
 
         return;
@@ -124,10 +118,6 @@ async function _handleTranscriptFinalized(store: IStore, action: AnyAction) {
     }
 }
 
-/**
- * Handle translation received
- * Apply language enforcement and enqueue for TTS playback
- */
 async function _handleTranslationReceived(store: IStore, action: AnyAction) {
     const { translation } = action;
     const state = store.getState();
@@ -184,10 +174,6 @@ async function _handleTranslationReceived(store: IStore, action: AnyAction) {
     }
 }
 
-/**
- * Handle TTS settings update
- * Persist to Supabase and stop current playback if engine changed
- */
 async function _handleTtsSettingsUpdate(store: IStore, action: AnyAction) {
     const { settings } = action;
     const state = store.getState();
@@ -195,7 +181,7 @@ async function _handleTtsSettingsUpdate(store: IStore, action: AnyAction) {
 
     // Get room ID and participant ID
     const roomId = conference?.getName() ?? '';
-    const participantId = state['features/base/participants'].localParticipant?.id ?? '';
+    const participantId = state['features/base/participants'].local?.id ?? '';
 
     if (!roomId || !participantId) {
         logger.warn('Cannot update settings: missing room or participant ID');

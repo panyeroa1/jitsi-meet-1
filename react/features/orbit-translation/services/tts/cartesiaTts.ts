@@ -2,24 +2,17 @@
 // Cartesia TTS engine implementation
 // Owner: Miles (Eburon Development)
 
-import type { ITtsEngine, SpeakArgs, TtsEngineName } from './types';
+import type { ISpeakArgs, ITtsEngine, TtsEngineName } from './types';
 
 const CARTESIA_API_KEY = process.env.CARTESIA_API_KEY || '';
 const CARTESIA_API_URL = 'https://api.cartesia.ai/tts/bytes';
 
-/**
- * Cartesia TTS Engine
- * Ultra-low latency neural TTS
- */
 export class CartesiaTts implements ITtsEngine {
     readonly name: TtsEngineName = 'cartesia';
     private audioContext: AudioContext | null = null;
     private currentSource: AudioBufferSourceNode | null = null;
 
-    /**
-     * Speak text using Cartesia API
-     */
-    async speak(args: SpeakArgs): Promise<void> {
+    async speak(args: ISpeakArgs): Promise<void> {
         const { text, targetLang, voiceId = 'a0e99841-438c-4a64-b679-ae501e7d6091' } = args; // Default: Barbershop Man
 
         if (!CARTESIA_API_KEY) {
@@ -68,7 +61,7 @@ export class CartesiaTts implements ITtsEngine {
             // Decode and play
             const audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer);
 
-            return new Promise((resolve, reject) => {
+            return new Promise<void>(resolve => {
                 const source = this.audioContext!.createBufferSource();
 
                 source.buffer = audioBuffer;
@@ -86,9 +79,6 @@ export class CartesiaTts implements ITtsEngine {
         }
     }
 
-    /**
-     * Stop current playback
-     */
     stop(): void {
         if (this.currentSource) {
             this.currentSource.stop();

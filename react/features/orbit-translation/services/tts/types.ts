@@ -4,14 +4,14 @@
 
 export type TtsEngineName = 'gemini_live' | 'elevenlabs' | 'cartesia';
 
-export interface SpeakArgs {
-    text: string;
+export interface ISpeakArgs {
     targetLang: string;
+    text: string;
     voiceId?: string;
 }
 
 export interface ITtsEngine {
     name: TtsEngineName;
-    speak(args: SpeakArgs): Promise<void>;
-    stop?(): void;
+    speak: (args: ISpeakArgs) => Promise<void>;
+    stop?: () => void;
 }

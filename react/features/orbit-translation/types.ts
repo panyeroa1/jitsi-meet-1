@@ -4,24 +4,18 @@
 
 import type { TtsEngineName } from './services/tts/types';
 
-/**
- * Transcript segment
- */
 export interface ITranscriptSegment {
+    endMs?: number;
     id?: string;
+    isFinal: boolean;
     roomId: string;
+    sourceLang?: string;
     speakerId: string;
     speakerName: string;
-    sourceLang?: string;
-    text: string;
     startMs?: number;
-    endMs?: number;
-    isFinal: boolean;
+    text: string;
 }
 
-/**
- * Translation segment
- */
 export interface ITranslationSegment {
     id?: string;
     roomId: string;
@@ -32,32 +26,23 @@ export interface ITranslationSegment {
     translator?: string;
 }
 
-/**
- * TTS settings
- */
 export interface ITtsSettings {
     engine: TtsEngineName;
     preferredLang: string;
-    voiceId: string | null;
     readAloudEnabled: boolean;
+    voiceId: string | null;
 }
 
-/**
- * Current segment buffer state
- */
 export interface ISegmentBuffer {
-    text: string;
     buffer: string;
     lastFlushAt: number;
+    text: string;
 }
 
-/**
- * Redux state for orbit-translation feature
- */
 export interface IOrbitTranslationState {
+    activeSubscription: any | null;
     currentSegment: ISegmentBuffer | null;
+    isPlaying: boolean;
     translationQueue: ITranslationSegment[];
     ttsSettings: ITtsSettings;
-    isPlaying: boolean;
-    activeSubscription: any | null;
 }

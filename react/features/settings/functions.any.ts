@@ -12,6 +12,7 @@ import { getHideSelfView } from '../base/settings/functions.any';
 import { parseStandardURIString } from '../base/util/uri';
 import { isStageFilmstripEnabled } from '../filmstrip/functions';
 import { isFollowMeActive, isFollowMeRecorderActive } from '../follow-me/functions';
+import { getTtsSettings as getOrbitTtsSettings } from '../orbit-translation/functions';
 import { isReactionsEnabled } from '../reactions/functions.any';
 import { areClosedCaptionsEnabled } from '../subtitles/functions.any';
 import { iAmVisitor } from '../visitors/functions';
@@ -126,6 +127,8 @@ export function getMoreTabProps(stateful: IStateful) {
     const stageFilmstripEnabled = isStageFilmstripEnabled(state);
     const language = normalizeCurrentLanguage(i18next.language) || DEFAULT_LANGUAGE;
     const configuredTabs: string[] = interfaceConfig.SETTINGS_SECTIONS || [];
+    const orbitTtsSettings = getOrbitTtsSettings(state as IReduxState);
+    const showOrbitTranslationSettings = Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_ANON_KEY);
 
     // when self view is controlled by the config we hide the settings
     const { disableSelfView, disableSelfViewSettings } = state['features/base/config'];
@@ -138,6 +141,11 @@ export function getMoreTabProps(stateful: IStateful) {
         iAmVisitor: iAmVisitor(state),
         languages: LANGUAGES,
         maxStageParticipants: state['features/base/settings'].maxStageParticipants,
+        orbitPreferredLang: orbitTtsSettings.preferredLang,
+        orbitReadAloudEnabled: orbitTtsSettings.readAloudEnabled,
+        orbitTtsEngine: orbitTtsSettings.engine,
+        orbitVoiceId: orbitTtsSettings.voiceId ?? '',
+        showOrbitTranslationSettings,
         showLanguageSettings: configuredTabs.includes('language'),
         showSubtitlesOnStage: state['features/base/settings'].showSubtitlesOnStage,
         stageFilmstripEnabled

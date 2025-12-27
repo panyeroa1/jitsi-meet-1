@@ -9,8 +9,10 @@ import AbstractDialogTab, {
 } from '../../../base/dialog/components/web/AbstractDialogTab';
 import { translate } from '../../../base/i18n/functions';
 import Checkbox from '../../../base/ui/components/web/Checkbox';
+import Input from '../../../base/ui/components/web/Input';
 import Select from '../../../base/ui/components/web/Select';
 import { MAX_ACTIVE_PARTICIPANTS } from '../../../filmstrip/constants';
+import type { TtsEngineName } from '../../../orbit-translation/services/tts/types';
 
 /**
  * The type of the React {@code Component} props of {@link MoreTab}.
@@ -64,6 +66,26 @@ export interface IProps extends AbstractDialogTabProps, WithTranslation {
     maxStageParticipants: number;
 
     /**
+     * Orbit translation preferred language (listener side).
+     */
+    orbitPreferredLang: string;
+
+    /**
+     * Orbit translation read-aloud enabled (listener side).
+     */
+    orbitReadAloudEnabled: boolean;
+
+    /**
+     * Orbit translation TTS engine.
+     */
+    orbitTtsEngine: TtsEngineName;
+
+    /**
+     * Orbit translation voice ID/name (engine-specific).
+     */
+    orbitVoiceId: string;
+
+    /**
      * Whether or not to display the language select dropdown.
      */
     showLanguageSettings: boolean;
@@ -72,6 +94,11 @@ export interface IProps extends AbstractDialogTabProps, WithTranslation {
      * Whether or not to display moderator-only settings.
      */
     showModeratorSettings: boolean;
+
+    /**
+     * Whether orbit translation settings should be shown.
+     */
+    showOrbitTranslationSettings: boolean;
 
     /**
      * Whether or not to show subtitles on stage.
@@ -127,6 +154,10 @@ class MoreTab extends AbstractDialogTab<IProps, any> {
         this._onHideSelfViewChanged = this._onHideSelfViewChanged.bind(this);
         this._onShowSubtitlesOnStageChanged = this._onShowSubtitlesOnStageChanged.bind(this);
         this._onLanguageItemSelect = this._onLanguageItemSelect.bind(this);
+        this._onOrbitReadAloudChanged = this._onOrbitReadAloudChanged.bind(this);
+        this._onOrbitPreferredLangSelect = this._onOrbitPreferredLangSelect.bind(this);
+        this._onOrbitTtsEngineSelect = this._onOrbitTtsEngineSelect.bind(this);
+        this._onOrbitVoiceIdChanged = this._onOrbitVoiceIdChanged.bind(this);
     }
 
     /**
@@ -141,6 +172,7 @@ class MoreTab extends AbstractDialogTab<IProps, any> {
             disableHideSelfView,
             iAmVisitor,
             hideSelfView,
+            showOrbitTranslationSettings,
             showLanguageSettings,
             showSubtitlesOnStage,
             t
@@ -167,6 +199,12 @@ class MoreTab extends AbstractDialogTab<IProps, any> {
                     name = 'show-subtitles-button'
                     onChange = { this._onShowSubtitlesOnStageChanged } /> }
                 {showLanguageSettings && this._renderLanguageSelect()}
+                {showOrbitTranslationSettings && (
+                    <>
+                        <hr className = { classes.divider } />
+                        {this._renderOrbitTranslationSettings()}
+                    </>
+                )}
             </div>
         );
     }
@@ -217,6 +255,46 @@ class MoreTab extends AbstractDialogTab<IProps, any> {
         const language = e.target.value;
 
         super._onChange({ currentLanguage: language });
+    }
+
+    /**
+     * Callback invoked to toggle orbit translation read-aloud.
+     *
+     * @param {Object} e - The key event to handle.
+     * @returns {void}
+     */
+    _onOrbitReadAloudChanged({ target: { checked } }: React.ChangeEvent<HTMLInputElement>) {
+        super._onChange({ orbitReadAloudEnabled: checked });
+    }
+
+    /**
+     * Callback invoked to change orbit translation preferred language.
+     *
+     * @param {Object} e - The key event to handle.
+     * @returns {void}
+     */
+    _onOrbitPreferredLangSelect(e: React.ChangeEvent<HTMLSelectElement>) {
+        super._onChange({ orbitPreferredLang: e.target.value });
+    }
+
+    /**
+     * Callback invoked to change orbit translation TTS engine.
+     *
+     * @param {Object} e - The key event to handle.
+     * @returns {void}
+     */
+    _onOrbitTtsEngineSelect(e: React.ChangeEvent<HTMLSelectElement>) {
+        super._onChange({ orbitTtsEngine: e.target.value as TtsEngineName });
+    }
+
+    /**
+     * Callback invoked to change orbit translation voice ID/name.
+     *
+     * @param {string} value - The new voice ID/name.
+     * @returns {void}
+     */
+    _onOrbitVoiceIdChanged(value: string) {
+        super._onChange({ orbitVoiceId: value });
     }
 
     /**
@@ -276,6 +354,64 @@ class MoreTab extends AbstractDialogTab<IProps, any> {
                 onChange = { this._onLanguageItemSelect }
                 options = { languageItems }
                 value = { currentLanguage } />
+        );
+    }
+
+    /**
+     * Returns UI for orbit translation preferences (read-aloud).
+     *
+     * @private
+     * @returns {ReactElement}
+     */
+    _renderOrbitTranslationSettings() {
+        const {
+            orbitPreferredLang,
+            orbitReadAloudEnabled,
+            orbitTtsEngine,
+            orbitVoiceId,
+            languages,
+            t
+        } = this.props;
+
+        const languageItems = languages.map((language: string) => ({
+            value: language,
+            label: t(`languages:${language}`)
+        }));
+
+        const engineItems = [
+            { value: 'gemini_live', label: t('settings.orbitTranslationEngineGeminiLive') },
+            { value: 'elevenlabs', label: t('settings.orbitTranslationEngineElevenLabs') },
+            { value: 'cartesia', label: t('settings.orbitTranslationEngineCartesia') }
+        ];
+
+        return (
+            <>
+                <Checkbox
+                    checked = { orbitReadAloudEnabled }
+                    label = { t('settings.orbitTranslationReadAloud') }
+                    name = 'orbit-translation-read-aloud'
+                    onChange = { this._onOrbitReadAloudChanged } />
+                <Select
+                    id = 'orbit-translation-language-select'
+                    label = { t('settings.orbitTranslationLanguage') }
+                    onChange = { this._onOrbitPreferredLangSelect }
+                    options = { languageItems }
+                    value = { orbitPreferredLang } />
+                <Select
+                    id = 'orbit-translation-tts-engine-select'
+                    label = { t('settings.orbitTranslationTtsEngine') }
+                    onChange = { this._onOrbitTtsEngineSelect }
+                    options = { engineItems }
+                    value = { orbitTtsEngine } />
+                <Input
+                    id = 'orbit-translation-voice-id'
+                    label = { t('settings.orbitTranslationVoiceId') }
+                    name = 'orbit-translation-voice-id'
+                    onChange = { this._onOrbitVoiceIdChanged }
+                    placeholder = { t('settings.orbitTranslationVoiceIdPlaceholder') }
+                    type = 'text'
+                    value = { orbitVoiceId } />
+            </>
         );
     }
 }

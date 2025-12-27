@@ -19,6 +19,7 @@ import { getLocalVideoTrack } from '../base/tracks/functions.web';
 import { appendURLHashParam } from '../base/util/uri';
 import { setFollowMe, setFollowMeRecorder } from '../follow-me/actions';
 import { disableKeyboardShortcuts, enableKeyboardShortcuts } from '../keyboard-shortcuts/actions';
+import { updateTtsSettings } from '../orbit-translation/actions';
 import { toggleBackgroundEffect } from '../virtual-background/actions';
 import virtualBackgroundLogger from '../virtual-background/logger';
 
@@ -151,6 +152,24 @@ export function submitMoreTab(newState: any) {
 
         if (newState.showSubtitlesOnStage !== currentState.showSubtitlesOnStage) {
             dispatch(updateSettings({ showSubtitlesOnStage: newState.showSubtitlesOnStage }));
+        }
+
+        // Orbit translation (read-aloud) settings.
+        const orbitVoiceId = typeof newState.orbitVoiceId === 'string' ? newState.orbitVoiceId.trim() : '';
+        const normalizedOrbitVoiceId = orbitVoiceId.length > 0 ? orbitVoiceId : null;
+        const currentOrbitVoiceId = typeof currentState.orbitVoiceId === 'string' ? currentState.orbitVoiceId.trim() : '';
+        const currentNormalizedOrbitVoiceId = currentOrbitVoiceId.length > 0 ? currentOrbitVoiceId : null;
+
+        if (newState.orbitReadAloudEnabled !== currentState.orbitReadAloudEnabled
+            || newState.orbitPreferredLang !== currentState.orbitPreferredLang
+            || newState.orbitTtsEngine !== currentState.orbitTtsEngine
+            || normalizedOrbitVoiceId !== currentNormalizedOrbitVoiceId) {
+            dispatch(updateTtsSettings({
+                engine: newState.orbitTtsEngine,
+                preferredLang: newState.orbitPreferredLang,
+                readAloudEnabled: newState.orbitReadAloudEnabled,
+                voiceId: normalizedOrbitVoiceId
+            }));
         }
     };
 }
