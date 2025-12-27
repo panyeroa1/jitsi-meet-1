@@ -404,3 +404,43 @@ Test result:
 Known limitations or follow-up tasks:
 
 - Android build errors persist but are unrelated to web development.
+------------------------------------------------------------
+
+Task ID: T-0006
+Title: Fix IDE-reported problems (Android & TS)
+Status: IN-PROGRESS
+Owner: Miles
+Related repo: jitsi-meet
+Created: 2025-12-28 04:36
+Last updated: 2025-12-28 04:36
+
+START LOG
+
+Timestamp: 2025-12-28 04:36
+Current behavior or state:
+- TS lint error in logger.ts: Interface name `Logger` doesn't match /^I[A-Z]/u and keys are out of order.
+- Android error in react-native-sdk/android: defaultConfig contains custom BuildConfig fields, but the feature is disabled.
+- Android error in twa and android: SDK location not found.
+
+Plan and scope for this task:
+- Rename Logger interface to ILogger and sort its keys.
+- Enable buildConfig in react-native-sdk/android/build.gradle.
+- Create/update local.properties with sdk.dir in twa/ and android/.
+
+Files or modules expected to change:
+- react/features/orbit-translation/logger.ts
+- react-native-sdk/android/build.gradle
+- twa/local.properties
+- android/local.properties
+
+Risks or things to watch out for:
+- Renaming Logger might affect other files importing it.
+- Correct SDK path must be determined.
+
+WORK CHECKLIST
+
+- [/] TS lint errors fixed in logger.ts
+- [ ] buildConfig enabled in react-native-sdk/android/build.gradle
+- [ ] local.properties configured in twa/ and android/
+
+END LOG
